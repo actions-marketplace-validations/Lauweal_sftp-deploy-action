@@ -1,11 +1,35 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'sftp-deploy-action'
+description: 'FTP Uploads files to the server'
+author: 'lemonpaimc@126.com'
 inputs:
-  milliseconds: # change this
+  host:
+    description: 'Server IP Address'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  prot:
+    description: 'port'
+    required: true
+    default: '22'
+  username:
+    description: 'The user name'
+    required: true
+  password:
+    description: 'password'
+    required: true
+  ignore:
+    description: 'Folders or files to be filtered'
+    required: false
+    default: '[]'
+  local:
+    description: 'Local folder'
+    required: true
+  remote:
+    description: "Remote folder"
+    required: true
+
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'lib/index.js'
+
+outputs:
+  message:
+    description: Message
