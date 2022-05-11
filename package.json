@@ -10,7 +10,7 @@
     "format-check": "prettier --check '**/*.ts'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
-    "test": "jest --host=1.13.190.96 --port=22 --username=root --password=Mr940409! --local=lib --remote=/www/wwwroot/nam",
+    "test": "jest --detectOpenHandles --host=1.13.190.96 --port=22 --username=root --password=Mr940409! --local=node_modules --remote=/www/wwwroot/nam",
     "all": "npm run build && npm run format && npm run package"
   },
   "repository": {

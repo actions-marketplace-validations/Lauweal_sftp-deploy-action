@@ -57,13 +57,13 @@ function setupClient(options) {
 }
 function parseClientOptions() {
     const host = core.getInput('host').split(',');
-    const prot = core.getInput('port');
+    const port = core.getInput('port');
     const username = core.getInput('username');
     const password = core.getInput('password');
     return host.reduce((a, b) => {
         return a.concat({
             host: b,
-            port: Number(prot),
+            port: Number(port),
             username,
             password
         });
@@ -139,7 +139,8 @@ function uploadFile(client, local, remote, ignore = []) {
         if (!exist) {
             yield Promise.all(dirs.map(d => client.mkdir(d, true)));
         }
-        return Promise.all(files.map(file => {
+        console.log(files);
+        return Promise.all(files.filter((f) => path_1.default.extname(f)).map(file => {
             core.info(`UPLOAD FILE START ----> ${file}`);
             return client
                 .put(file, file.replace(local, remote))
@@ -147,7 +148,8 @@ function uploadFile(client, local, remote, ignore = []) {
                 core.info(`UPLOAD FILE SUCCESS ----> ${file}`);
                 return true;
             })
-                .catch(() => {
+                .catch((e) => {
+                console.log(e);
                 core.info(`UPLOAD FILE ERROR ----> ${file}`);
                 return false;
             });
