@@ -10,30 +10,29 @@ async function uploadDir(
   ignore: string[] = []
 ): Promise<boolean> {
   const exist = await client.exists(remote)
+  const files = glob.sync(path.join(local, '**/*'), { ignore: ignore || [] })
+  const dirs = files.map((f) => path.parse(f.replace(local, remote)).dir)
   if (!exist) {
-    await client.rmdir(remote)
-  } else {
-    await client.delete(remote)
-    await client.rmdir(remote)
+    await Promise.all(dirs.map((d) => client.mkdir(d, true)))
   }
-  const files = glob.sync(path.join(local, '**/*'), {ignore: ignore || []})
   return Promise.all(
     files.map(file => {
       core.info(`UPLOAD FILE START ----> ${file}`)
       return client
-        .fastPut(file, file.replace(local, remote))
+        .put(file, file.replace(local, remote))
         .then(() => {
           core.info(`UPLOAD FILE SUCCESS ----> ${file}`)
-          client.end()
           return true
         })
         .catch(() => {
           core.info(`UPLOAD FILE ERROR ----> ${file}`)
-          client.end()
           return false
         })
     })
-  ).then(sta => sta.every(s => !!s))
+  ).then(sta => {
+    client.end()
+    return sta.every(s => !!s)
+  })
 }
 
 async function setupClient(options: Client.ConnectOptions) {

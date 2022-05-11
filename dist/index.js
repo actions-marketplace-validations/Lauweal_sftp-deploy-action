@@ -53,10 +53,11 @@ function uploadDir(client, local, remote, ignore = []) {
             yield client.rmdir(remote);
         }
         const files = glob_1.default.sync(path_1.default.join(local, '**/*'), { ignore: ignore || [] });
+        // const dirs = files.map((f) => f.split('/'))
         return Promise.all(files.map(file => {
             core.info(`UPLOAD FILE START ----> ${file}`);
             return client
-                .fastPut(file, file.replace(local, remote))
+                .put(file, file.replace(local, remote))
                 .then(() => {
                 core.info(`UPLOAD FILE SUCCESS ----> ${file}`);
                 client.end();
