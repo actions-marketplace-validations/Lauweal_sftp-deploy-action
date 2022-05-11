@@ -28,7 +28,7 @@ inputs:
 
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'lib/main.js'
 
 outputs:
   message:

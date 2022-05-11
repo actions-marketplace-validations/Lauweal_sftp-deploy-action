@@ -45,30 +45,27 @@ const path_1 = __importDefault(__nccwpck_require__(5622));
 function uploadDir(client, local, remote, ignore = []) {
     return __awaiter(this, void 0, void 0, function* () {
         const exist = yield client.exists(remote);
-        if (!exist) {
-            yield client.rmdir(remote);
-        }
-        else {
-            yield client.delete(remote);
-            yield client.rmdir(remote);
-        }
         const files = glob_1.default.sync(path_1.default.join(local, '**/*'), { ignore: ignore || [] });
-        // const dirs = files.map((f) => f.split('/'))
+        const dirs = files.map(f => path_1.default.parse(f.replace(local, remote)).dir);
+        if (!exist) {
+            yield Promise.all(dirs.map(d => client.mkdir(d, true)));
+        }
         return Promise.all(files.map(file => {
             core.info(`UPLOAD FILE START ----> ${file}`);
             return client
                 .put(file, file.replace(local, remote))
                 .then(() => {
                 core.info(`UPLOAD FILE SUCCESS ----> ${file}`);
-                client.end();
                 return true;
             })
                 .catch(() => {
                 core.info(`UPLOAD FILE ERROR ----> ${file}`);
-                client.end();
                 return false;
             });
-        })).then(sta => sta.every(s => !!s));
+        })).then(sta => {
+            client.end();
+            return sta.every(s => !!s);
+        });
     });
 }
 function setupClient(options) {

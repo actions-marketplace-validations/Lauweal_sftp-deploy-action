@@ -10,10 +10,10 @@ async function uploadDir(
   ignore: string[] = []
 ): Promise<boolean> {
   const exist = await client.exists(remote)
-  const files = glob.sync(path.join(local, '**/*'), { ignore: ignore || [] })
-  const dirs = files.map((f) => path.parse(f.replace(local, remote)).dir)
+  const files = glob.sync(path.join(local, '**/*'), {ignore: ignore || []})
+  const dirs = files.map(f => path.parse(f.replace(local, remote)).dir)
   if (!exist) {
-    await Promise.all(dirs.map((d) => client.mkdir(d, true)))
+    await Promise.all(dirs.map(d => client.mkdir(d, true)))
   }
   return Promise.all(
     files.map(file => {

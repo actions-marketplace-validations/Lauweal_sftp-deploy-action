@@ -21,10 +21,11 @@ jobs:
 
       - name: cache
         uses: actions/cache@v3
+        id: cache-packages
         env:
           cache-name: cache-node-modules
         with:
-          path: ./node_modules
+          path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -32,7 +33,6 @@ jobs:
             ${{ runner.os }}-
 
       - name: 📦 Install dependencies
-        if: steps.cache-packages.outputs.cache-hit != 'true'
         run: npm install
 
       - name: 🚀 Build actions
