@@ -5,7 +5,7 @@ inputs:
   host:
     description: 'Server IP Address'
     required: true
-  prot:
+  port:
     description: 'port'
     required: true
     default: '22'
