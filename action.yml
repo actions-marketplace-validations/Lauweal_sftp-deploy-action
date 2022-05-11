@@ -15,10 +15,6 @@ inputs:
   password:
     description: 'password'
     required: true
-  ignore:
-    description: 'Folders or files to be filtered'
-    required: false
-    default: '[]'
   local:
     description: 'Local folder'
     required: true

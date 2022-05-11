@@ -24,8 +24,7 @@ test('test runs', () => {
     return uploadFile(
       client,
       path.join(process.cwd(), local),
-      remote,
-      ignore
+      remote
     )
   }).then((res) => {
     expect(res).toEqual(true)

@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import Client from 'ssh2-sftp-client'
 import path from 'path'
-import {uploadFile} from './uploadFile'
+import { uploadFile } from './uploadFile'
 
 async function setupClient(options: Client.ConnectOptions) {
   const client = new Client()
@@ -31,7 +31,6 @@ function parseClientOptions() {
 }
 
 async function run() {
-  const ignore = JSON.parse(core.getInput('ignore') || '[]')
   const local = path.join(process.cwd(), core.getInput('local'))
   const remote = core.getInput('remote')
 
@@ -40,7 +39,7 @@ async function run() {
     options.map(opt => setupClient(opt))
   ).then(cl => cl.filter(c => !!c))) as any
   const status = await Promise.all(
-    clients.map(cli => uploadFile(cli, local, remote, ignore))
+    clients.map(cli => uploadFile(cli, local, remote))
   )
 
   if (!status.every(s => !!s)) {
