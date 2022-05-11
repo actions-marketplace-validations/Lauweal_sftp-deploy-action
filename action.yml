@@ -15,6 +15,10 @@ inputs:
   password:
     description: 'password'
     required: true
+  ignore:
+    description: 'ignore'
+    required: false
+    default: '[]'
   local:
     description: 'Local folder'
     required: true
