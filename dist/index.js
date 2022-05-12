@@ -73,9 +73,10 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const local = path_1.default.join(process.cwd(), core.getInput('local'));
         const remote = core.getInput('remote');
+        const ignore = JSON.parse(core.getInput('ignore'));
         const options = parseClientOptions();
         const clients = (yield Promise.all(options.map(opt => setupClient(opt))).then(cl => cl.filter(c => !!c)));
-        const status = yield Promise.all(clients.map(cli => (0, uploadFile_1.uploadFile)(cli, local, remote)));
+        const status = yield Promise.all(clients.map(cli => (0, uploadFile_1.uploadFile)(cli, local, remote, ignore)));
         if (!status.every(s => !!s)) {
             core.error('Upload Error');
             core.setOutput('message', 'Upload Error');
@@ -134,19 +135,23 @@ const fs_1 = __importDefault(__nccwpck_require__(5747));
 function uploadFile(client, local, remote, ignore = []) {
     return __awaiter(this, void 0, void 0, function* () {
         const paths = glob_1.default.sync(path_1.default.join(local, '**/*'), { ignore: ignore || [] });
-        const files = paths.filter((f) => fs_1.default.statSync(f).isFile());
-        const dirs = paths.filter((f) => fs_1.default.statSync(f).isDirectory());
-        yield Promise.all(dirs.map((d) => client.mkdir(d.replace(local, remote), true)));
-        return Promise.all(files.map((f) => {
-            return client.fastPut(f, f.replace(local, remote)).then((res) => {
+        const files = paths.filter(f => fs_1.default.statSync(f).isFile());
+        const dirs = paths.filter(f => fs_1.default.statSync(f).isDirectory());
+        yield Promise.all(dirs.map(d => client.mkdir(d.replace(local, remote), true)));
+        return Promise.all(files.map(f => {
+            return client
+                .fastPut(f, f.replace(local, remote))
+                .then(res => {
                 core.info(`UPLOAD FILE SUCCESS ----> ${res}`);
                 return true;
             })
-                .catch((e) => {
+                .catch(e => {
                 core.info(`UPLOAD FILE ERROR ----> ${e.message}`);
                 return false;
             });
-        })).then((status) => status.every((s) => !!s)).then((re) => {
+        }))
+            .then(status => status.every(s => !!s))
+            .then(re => {
             client.end();
             return re;
         });

@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import Client from 'ssh2-sftp-client'
 import path from 'path'
-import { uploadFile } from './uploadFile'
+import {uploadFile} from './uploadFile'
 
 async function setupClient(options: Client.ConnectOptions) {
   const client = new Client()
