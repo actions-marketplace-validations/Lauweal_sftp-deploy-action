@@ -25,7 +25,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "glob": "^8.0.1",
+    "glob": "^10.2.3",
     "ssh2-sftp-client": "^8.0.0"
   },
   "devDependencies": {
